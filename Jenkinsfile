@@ -1,11 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage('Image Cleanup') {
-            steps {
-                sh 'docker system prune -a --volumes --force'
-            }
-        }
 	    stage('OWASP Dependency Check') {
             steps {
                     script {
@@ -25,6 +20,11 @@ pipeline {
                     dependencyCheckPublisher(pattern: 'dependency-check-report.xml')
                 }
             }
+        stage('Image Cleanup') {
+            steps {
+                sh 'docker system prune -a --volumes --force'
+            }
+        }
         stage('Build') {
             steps {
                 sh 'docker compose build'
