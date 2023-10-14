@@ -69,7 +69,7 @@ pipeline {
         }
         stage('Lint and Save Errors') {
             steps {
-                find src -name '*.js' -exec npx eslint {} \\; 2>&1 > workspace/eslint-errors.txt
+                find src -name '*.js' -exec npx eslint {} 2>&1 > workspace/eslint-errors.txt
             }
         }
             
