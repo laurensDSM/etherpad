@@ -1,5 +1,10 @@
 pipeline {
     agent any
+    environment {
+        GITHUB_TOKEN = credentials('github-token')
+        IMAGE_NAME = 'laurensdsm/etherpad'
+        IMAGE_VERSION = 'latest'
+    }
     stages {
         stage('Image Cleanup') {
             steps {
@@ -78,12 +83,43 @@ pipeline {
                 archiveArtifacts artifacts: 'nuclei2.html', allowEmptyArchive: true
             }
         }
+        stage('Login to GHCR') {
+            steps {
+                sh 'echo $GITHUB_TOKEN_PSW | docker login ghcr.io -u $GITHUB_TOKEN_USR --password-stdin'
+            }
+        }
+
+        stage('Tag Image') {
+            steps {
+                sh "docker tag $IMAGE_NAME:$IMAGE_VERSION ghcr.io/$IMAGE_NAME:$IMAGE_VERSION"
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                sh "docker push ghcr.io/$IMAGE_NAME:$IMAGE_VERSION"
+            }
+        }
+        
+        stage ('Notation Login') {
+            steps {
+                sh 'echo $GITHUB_TOKEN_PSW | notation login ghcr.io -u $GITHUB_TOKEN_USR --password-stdin'
+            }
+        }
+
+        stage ('Image Signing') {
+            steps {
+                sh 'if [ ! -f /var/lib/jenkins/.config/notation/localkeys/etherpad.org.key ]; then notation cert generate-test --default "etherpad.org"; fi'
+                sh 'notation sign ghcr.io/$IMAGE_NAME:$IMAGE_VERSION'
+            }
+        }
     }
     post {
         failure {
             sh 'echo "Pipeline failed!"'
         }
         always{
+            sh 'docker logout'
             publishHTML(
                 target: [
                     allowMissing: false,

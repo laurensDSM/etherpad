@@ -6,6 +6,7 @@
 
 FROM node:lts-alpine
 LABEL maintainer="Etherpad team, https://github.com/ether/etherpad-lite"
+LABEL org.opencontainers.image.source https://github.com/laurensDSM/etherpad
 
 ARG TIMEZONE=
 
