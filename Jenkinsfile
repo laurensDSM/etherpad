@@ -1,7 +1,12 @@
 pipeline {
     agent any
     stages {
-	    stage('OWASP Dependency Check') {
+        stage('Image Cleanup') {
+            steps {
+                sh 'docker system prune -a --volumes --force'
+            }
+        }
+        stage('OWASP Dependency Check') {
             steps {
                     script {
                         def additionalArguments = '''\
@@ -10,21 +15,14 @@ pipeline {
                             -f ALL
                             --prettyPrint
                         '''
-
                         dependencyCheck(
                             additionalArguments: additionalArguments,
                             odcInstallation: 'owasp'
                         )
                     }
-
                     dependencyCheckPublisher(pattern: 'dependency-check-report.xml')
                 }
             }
-        stage('Image Cleanup') {
-            steps {
-                sh 'docker system prune -a --volumes --force'
-            }
-        }
         stage('Build') {
             steps {
                 sh 'docker compose build'
