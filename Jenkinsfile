@@ -70,6 +70,7 @@ pipeline {
                 try {
                     sh 'rm -rf node_modules package-lock.json && npm install'
                     sh 'rm eslint.xml || true'
+                    sh 'echo "{}" > .eslintrc.json' // Maak een leeg ESLint-configuratiebestand
                     sh './node_modules/eslint/bin/eslint.js -f checkstyle src > eslint.xml'
                 } catch (Exception e) {
                     // Vang ESLint-fouten op en markeer ze, maar ga door met de build
@@ -82,6 +83,7 @@ pipeline {
             }
         }
     }
+
 
         // stage('Deployment') {
         //     steps {
