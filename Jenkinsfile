@@ -15,12 +15,13 @@ pipeline {
                             -f ALL
                             --prettyPrint
                         '''
+
                         dependencyCheck(
                             additionalArguments: additionalArguments,
                             odcInstallation: 'owasp'
                         )
                     }
-                    
+
                     dependencyCheckPublisher(pattern: 'dependency-check-report.xml')
                 }
             }
