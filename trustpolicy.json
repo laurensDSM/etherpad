@@ -1,0 +1,16 @@
+{
+    "version": "1.0",
+    "trustPolicies": [
+        {
+            "name": "etherpad",
+            "registryScopes": [ "*" ],
+            "signatureVerification": {
+                "level" : "strict"
+            },
+            "trustStores": [ "ca:etherpad.org" ],
+            "trustedIdentities": [
+                "*"
+            ]
+        }
+    ]
+}
