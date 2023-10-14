@@ -20,6 +20,7 @@ pipeline {
                             odcInstallation: 'owasp'
                         )
                     }
+                    
                     dependencyCheckPublisher(pattern: 'dependency-check-report.xml')
                 }
             }
