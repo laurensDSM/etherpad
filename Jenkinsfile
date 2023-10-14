@@ -44,7 +44,7 @@ pipeline {
         failure {
             sh 'echo "Pipeline failed!"'
         }
-        always
+        always{
             publishHTML(
                 target: [
                     allowMissing: false,
@@ -57,5 +57,6 @@ pipeline {
                     useWrapperFileDirectly: true
                 ]
             )
+        }
     }     
 }
