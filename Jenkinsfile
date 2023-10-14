@@ -35,7 +35,7 @@ pipeline {
         }
         // stage('Trivy Check') {
         //     steps {
-        //         sh "trivy image --no-progress --exit-code 0 --severity MEDIUM,HIGH,CRITICAL --format template --template '@/usr/local/share/trivy/templates/html.tpl' -o trivy_report.html laurensdsm/etherpad-lite:latest"
+        //         sh "trivy image --no-progress --exit-code 0 --severity MEDIUM,HIGH,CRITICAL --format template --template '@/usr/local/share/trivy/templates/html.tpl' -o trivy_report.html laurensdsm/etherpad:latest"
         //         archiveArtifacts artifacts: 'trivy_report.html', allowEmptyArchive: true
         //     }
         // }
