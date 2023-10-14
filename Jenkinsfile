@@ -62,7 +62,6 @@ pipeline {
         //         archiveArtifacts artifacts: 'trufflehog_results.html', allowEmptyArchive: true
         //     }
         // }
-
         stage('ESLint Check') {
             steps {
                 script {
@@ -208,6 +207,7 @@ pipeline {
             //     ]
             // )
             recordIssues enabledForFailure: true, aggregatingResults: true, tool: checkStyle(pattern: 'eslint.xml')
+
         }
     }     
 }
