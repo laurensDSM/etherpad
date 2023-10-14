@@ -1,4 +1,4 @@
-# Contributor Guidelines
+# Contributor Guidelines 
 (Please talk to people on the mailing list before you change this page, see our section on [how to get in touch](https://github.com/ether/etherpad-lite#get-in-touch))
 
 ## Pull requests
