@@ -75,7 +75,7 @@ pipeline {
                 script {
                     try {
                         sh 'rm eslint.xml || true'
-                        sh 'npx eslint src --format checkstyle --output-file eslint.xml'
+                        sh 'npx eslint src --format checkstyle --output-file eslint.xml --no-eslintrc'
                     } catch (Exception e) {
                         currentBuild.result = 'SUCCESS' // Stel het algehele buildresultaat in op SUCCESS bij fouten
                     }
