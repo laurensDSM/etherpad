@@ -70,8 +70,8 @@ pipeline {
                 sh 'rm nuclei2.html || true'
                 sh 'echo "DAST SCAN"'
                 sh 'docker pull projectdiscovery/nuclei:latest'
-                sh 'docker run --rm projectdiscovery/nuclei:latest -u http://192.168.84.129:9001/ --no-color > nuclei.txt'
-                sh 'docker run --rm projectdiscovery/nuclei:latest -u http://192.168.84.129:9001/ --no-color -j  > nuclei_json.txt'
+                sh 'docker run --rm projectdiscovery/nuclei:latest -u http://192.168.0.141:9001/ --no-color > nuclei.txt'
+                sh 'docker run --rm projectdiscovery/nuclei:latest -u http://192.168.0.141:9001/ --no-color -j  > nuclei_json.txt'
                 sh './convert_nuclei.sh'
                 sh './convert_nuclei_json.sh'
                 archiveArtifacts artifacts: 'nuclei1.html', allowEmptyArchive: true
