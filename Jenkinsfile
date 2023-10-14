@@ -62,25 +62,27 @@ pipeline {
         //         archiveArtifacts artifacts: 'trufflehog_results.html', allowEmptyArchive: true
         //     }
         // }
-        stage('ESLint Check') {
-            steps {
-                script {
-                    def eslintError = null 
-                    try {
-                        sh 'rm -rf node_modules package-lock.json && npm install'
-                        sh 'rm eslint.xml || true'
-                        sh './node_modules/eslint/bin/eslint.js -f checkstyle src > eslint.xml'
-                    } catch (Exception e) {
-                        // Catch any exception and handle it gracefully
-                        eslintError = "ESLint Check failed: ${e.message}"
-                        echo eslintError
-                        currentBuild.result = 'SUCCESS' // Set overall build result to SUCCESS
-                    }
 
+    stage('ESLint Check') {
+        steps {
+            script {
+                def eslintError = null
+                try {
+                    sh 'rm -rf node_modules package-lock.json && npm install'
+                    sh 'rm eslint.xml || true'
+                    sh './node_modules/eslint/bin/eslint.js -f checkstyle src > eslint.xml'
+                } catch (Exception e) {
+                    // Vang ESLint-fouten op en markeer ze, maar ga door met de build
+                    eslintError = "ESLint Check failed: ${e.message}"
+                    echo eslintError
+                } finally {
+                    // Archiveer ESLint-rapport, zelfs als er fouten zijn
                     archiveArtifacts artifacts: 'eslint.xml', allowEmptyArchive: true
                 }
             }
         }
+    }
+
         // stage('Deployment') {
         //     steps {
         //         sh 'docker compose up -d'
@@ -155,54 +157,54 @@ pipeline {
         }
         always{
             sh 'docker logout'
-            publishHTML(
-                target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll: false,
-                    reportDir: '.',
-                    reportFiles: 'trivy_report.html',
-                    reportName: 'Trivy Report',
-                    reportTitles: '',
-                    useWrapperFileDirectly: true
-                ]
-            )
-            publishHTML(
-                target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll: false,
-                    reportDir: '.',
-                    reportFiles: 'trufflehog_results.html',
-                    reportName: 'Trufflehog Report',
-                    reportTitles: '',
-                    useWrapperFileDirectly: true
-                ]
-            )
-            publishHTML(
-                target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll: false,
-                    reportDir: '.',
-                    reportFiles: 'nuclei1.html',
-                    reportName: 'Nuclei Basic ',
-                    reportTitles: '',
-                    useWrapperFileDirectly: true
-                ]
-            )
-            publishHTML(
-                target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll: false,
-                    reportDir: '.',
-                    reportFiles: 'nuclei2.html',
-                    reportName: 'Nuclei Extend ',
-                    reportTitles: '',
-                    useWrapperFileDirectly: true
-                ]
-            )
+            // publishHTML(
+            //     target: [
+            //         allowMissing: false,
+            //         alwaysLinkToLastBuild: false,
+            //         keepAll: false,
+            //         reportDir: '.',
+            //         reportFiles: 'trivy_report.html',
+            //         reportName: 'Trivy Report',
+            //         reportTitles: '',
+            //         useWrapperFileDirectly: true
+            //     ]
+            // )
+            // publishHTML(
+            //     target: [
+            //         allowMissing: false,
+            //         alwaysLinkToLastBuild: false,
+            //         keepAll: false,
+            //         reportDir: '.',
+            //         reportFiles: 'trufflehog_results.html',
+            //         reportName: 'Trufflehog Report',
+            //         reportTitles: '',
+            //         useWrapperFileDirectly: true
+            //     ]
+            // )
+            // publishHTML(
+            //     target: [
+            //         allowMissing: false,
+            //         alwaysLinkToLastBuild: false,
+            //         keepAll: false,
+            //         reportDir: '.',
+            //         reportFiles: 'nuclei1.html',
+            //         reportName: 'Nuclei Basic ',
+            //         reportTitles: '',
+            //         useWrapperFileDirectly: true
+            //     ]
+            // )
+            // publishHTML(
+            //     target: [
+            //         allowMissing: false,
+            //         alwaysLinkToLastBuild: false,
+            //         keepAll: false,
+            //         reportDir: '.',
+            //         reportFiles: 'nuclei2.html',
+            //         reportName: 'Nuclei Extend ',
+            //         reportTitles: '',
+            //         useWrapperFileDirectly: true
+            //     ]
+            // )
             recordIssues enabledForFailure: true, aggregatingResults: true, tool: checkStyle(pattern: 'eslint.xml')
         }
     }     
