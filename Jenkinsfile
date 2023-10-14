@@ -10,7 +10,7 @@ pipeline {
             steps {
                 sh 'docker system prune -a --volumes --force'
             }
-        // }
+        }
         // stage('OWASP Dependency Check') {
         //     steps {
         //             script {
