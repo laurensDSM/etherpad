@@ -69,12 +69,7 @@ pipeline {
         }
         stage('Lint and Save Errors') {
             steps {
-                script {
-                    // Voer ESLint-check uit in de workspace en sla fouten op in een bestand
-                    dir('workspace') {
-                        sh 'npx eslint src/**/*.js 2>&1 > eslint-errors.txt'
-                    }
-                }
+                sh "npx eslint 'src/**/**/*.js' 2>&1 > workspace/eslint-errors.txt"
             }
         }
             
