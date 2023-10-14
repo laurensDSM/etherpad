@@ -210,6 +210,7 @@ pipeline {
             //         useWrapperFileDirectly: true
             //     ]
             // )
+            recordIssues enabledForFailure: true, aggregatingResults: true, tool: checkStyle(pattern: 'eslint.xml')
         }
     }     
 }
