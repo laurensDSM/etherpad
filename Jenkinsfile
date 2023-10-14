@@ -62,27 +62,22 @@ pipeline {
         //         archiveArtifacts artifacts: 'trufflehog_results.html', allowEmptyArchive: true
         //     }
         // }
-        stage('ESLint Check') {
+        stage('Install ESLint') {
+            steps {
+                sh 'npm install eslint --save-dev'
+                }
+        }
+        stage('Lint and Save Errors') {
             steps {
                 script {
-                    def eslintError = null // Initialize eslintError
-
-                    try {
-                        sh 'rm -rf node_modules package-lock.json && npm install'
-                        sh 'rm eslint.xml || true'
-                        sh './node_modules/eslint/bin/eslint.js -f checkstyle src > eslint.xml'
-                    } catch (Exception e) {
-                        // Catch any exception and handle it gracefully
-                        eslintError = "ESLint Check failed: ${e.message}"
-                        echo eslintError
-                        currentBuild.result = 'SUCCESS' // Set overall build result to SUCCESS
+                    // Voer ESLint-check uit in de workspace en sla fouten op in een bestand
+                    dir('workspace') {
+                        sh 'npx eslint . 2>&1 > eslint-errors.txt'
                     }
-
-                    archiveArtifacts artifacts: 'eslint.xml', allowEmptyArchive: true
                 }
             }
         }
-
+            
 
         // stage('Deployment') {
         //     steps {
@@ -156,6 +151,10 @@ pipeline {
         failure {
             sh 'echo "Pipeline failed!"'
         }
+        success {
+            // Publiceer het bestand met fouten als een artefact in Jenkins
+            archiveArtifacts artifacts: 'workspace/eslint/eslint-errors.txt', allowEmptyArchive: true
+        }
         always{
             sh 'docker logout'
             // publishHTML(
@@ -206,8 +205,6 @@ pipeline {
             //         useWrapperFileDirectly: true
             //     ]
             // )
-            recordIssues enabledForFailure: true, aggregatingResults: true, tool: checkStyle(pattern: 'eslint.xml')
-
         }
     }     
 }
