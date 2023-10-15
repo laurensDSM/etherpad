@@ -21,6 +21,7 @@ pipeline {
         stage('Deployment') {
             steps {
                 sh 'docker compose up -d'
+
             }
         }
         stage('ESLint Check') {
@@ -30,6 +31,7 @@ pipeline {
 
                     try {
                         sh 'rm -rf node_modules package-lock.json && npm install'
+                        sh 'npm init'
                         sh 'rm eslint.xml || true'
                         sh './node_modules/eslint/bin/eslint.js -f checkstyle src > eslint.xml'
                     } catch (Exception e) {
