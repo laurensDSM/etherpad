@@ -52,8 +52,7 @@ pipeline {
             sh 'echo "Pipeline failed!"'
         }
         always{
-            sh 'docker logout'
-            publishCheckstyle(pattern: 'eslint.xml', unstableTotalAll: '10', healthyTotalAll: '5')
+            //sh 'docker logout'
             recordIssues enabledForFailure: true, aggregatingResults: true, tool: checkStyle(pattern: 'eslint.xml')
         }
             
